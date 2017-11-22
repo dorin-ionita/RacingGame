@@ -3,10 +3,16 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <cstdio>
 
 #include <Core/Engine.h>
 
 using namespace std;
+
+char my_data[1000];
+int last_x_road = -30;
+int last_y_road = -30;
+int cur_idx_string = 0;
 
 Laborator6::Laborator6()
 {
@@ -18,6 +24,19 @@ Laborator6::~Laborator6()
 
 void Laborator6::Init()
 {
+	{
+		FILE *input_file;
+		input_file = fopen("input.txt", "r");
+		if (input_file == NULL)
+			cout << "Can't open the input data file.";
+		else
+			fgets(my_data, 1000, input_file);
+		fclose(input_file);
+	} //Read data from file
+
+	//cout << "Data in file is";
+	//puts(my_data);
+
 	{
 		Mesh* mesh = new Mesh("box");
 		mesh->LoadMesh(RESOURCE_PATH::MODELS + "Primitives", "box.obj");
@@ -174,11 +193,12 @@ void Laborator6::FrameStart()
 
 void Laborator6::Update(float deltaTimeSeconds)
 {
+
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(45.0f), glm::vec3(0, 1, 0));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(40.0f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(90.0f));
 		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
 	}
 
@@ -192,18 +212,42 @@ void Laborator6::Update(float deltaTimeSeconds)
 
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(1, 0.01f, 0));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
-		RenderSimpleMesh(meshes["road"], shaders["ShaderRoad"], modelMatrix);
-	}
-
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(-2, 0.5f, 0));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 1, 0));
 		RenderMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
 	}
+
+	{
+		for (int i = cur_idx_string; i < strlen(my_data); i += 2) {
+			if (my_data[i] == '1') {
+				//cout << 1;
+				last_x_road += 2;
+			}
+			else if (my_data[i] == '2') {
+				//cout << 2;
+				last_y_road -= 2;
+			}
+			else if (my_data[i] == '3') {
+				//cout << 3;
+				last_y_road += 2;
+			}
+			else if (my_data[i] == '4') {
+				//cout << 4;
+				last_x_road -= 2;
+			}
+			{
+				//cout << "AICI";
+				//cout << last_x_road << " " << last_y_road << endl;
+				glm::mat4 modelMatrix = glm::mat4(1);
+				modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road, 0.01f, last_y_road));
+				modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+				modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
+				RenderSimpleMesh(meshes["road"], shaders["ShaderRoad"], modelMatrix);
+			}
+		}
+	}
+	last_x_road = -30;
+	last_y_road = -30;
 }
 
 void Laborator6::FrameEnd()
