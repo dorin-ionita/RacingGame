@@ -84,14 +84,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShader.glsl" />
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShaderRoad.glcl" />
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShaderRoad.glsl" />
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShaderTerrain.glsl" />
     <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShader.glsl" />
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShaderRoad.glcl" />
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShaderRoad.glsl" />
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShaderTerrain.glsl" />
     <None Include="..\Source\Laboratoare\Laborator7\Shaders\FragmentShader.glsl" />
     <None Include="..\Source\Laboratoare\Laborator7\Shaders\VertexShader.glsl" />
     <None Include="..\Source\Laboratoare\Laborator8\Shaders\FragmentShader.glsl" />
     <None Include="..\Source\Laboratoare\Laborator8\Shaders\VertexShader.glsl" />
     <None Include="..\Source\Laboratoare\Laborator9\Shaders\FragmentShader.glsl" />
     <None Include="..\Source\Laboratoare\Laborator9\Shaders\VertexShader.glsl" />
+    <None Include="FragmentShaderRoad.glcl" />
     <None Include="FragmentShaderTerrain.glsl" />
+    <None Include="VertexShaderRoad.glcl" />
     <None Include="VertexShaderTerrain.glsl" />
   </ItemGroup>
   <ItemGroup>

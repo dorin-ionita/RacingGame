@@ -29,13 +29,13 @@ void Laborator6::Init()
 		vector<VertexFormat> vertices
 		{
 			VertexFormat(glm::vec3(-1, -1,  0), glm::vec3(0, 1, 0), glm::vec3(0.2, 0.8, 0)),
-			VertexFormat(glm::vec3( 1, -1,  0), glm::vec3(1, 0, 0), glm::vec3(0.9, 0.4, 0)),
+			VertexFormat(glm::vec3(1, -1,  0), glm::vec3(1, 0, 0), glm::vec3(0.9, 0.4, 0)),
 			VertexFormat(glm::vec3(-1,  1,  0), glm::vec3(1, 0, 0), glm::vec3(0.7, 0.7, 0)),
-			VertexFormat(glm::vec3( 1,  1,  0), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.3, 0)),
+			VertexFormat(glm::vec3(1,  1,  0), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.3, 0)),
 			VertexFormat(glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0), glm::vec3(0.3, 0.5, 0)),
-			VertexFormat(glm::vec3( 1, -1, 0), glm::vec3(0, 1, 0), glm::vec3(0.5, 0.2, 0)),
+			VertexFormat(glm::vec3(1, -1, 0), glm::vec3(0, 1, 0), glm::vec3(0.5, 0.2, 0)),
 			VertexFormat(glm::vec3(-1,  1, 0), glm::vec3(1, 1, 0), glm::vec3(0.7, 0.0, 0)),
-			VertexFormat(glm::vec3( 1,  1, 0), glm::vec3(0, 0, 0), glm::vec3(0.1, 0.5, 0)),
+			VertexFormat(glm::vec3(1,  1, 0), glm::vec3(0, 0, 0), glm::vec3(0.1, 0.5, 0)),
 		};
 
 		vector<unsigned short> indices =
@@ -51,6 +51,32 @@ void Laborator6::Init()
 		CreateMesh("cube", vertices, indices);
 	}
 
+	{
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(-1, -1,  0), glm::vec3(0, 1, 0), glm::vec3(0.2, 0.8, 0)),
+			VertexFormat(glm::vec3(1, -1,  0), glm::vec3(1, 0, 0), glm::vec3(0.9, 0.4, 0)),
+			VertexFormat(glm::vec3(-1,  1,  0), glm::vec3(1, 0, 0), glm::vec3(0.7, 0.7, 0)),
+			VertexFormat(glm::vec3(1,  1,  0), glm::vec3(0, 1, 0), glm::vec3(0.7, 0.3, 0)),
+			VertexFormat(glm::vec3(-1, -1, 0), glm::vec3(1, 1, 0), glm::vec3(0.3, 0.5, 0)),
+			VertexFormat(glm::vec3(1, -1, 0), glm::vec3(0, 1, 0), glm::vec3(0.5, 0.2, 0)),
+			VertexFormat(glm::vec3(-1,  1, 0), glm::vec3(1, 1, 0), glm::vec3(0.7, 0.0, 0)),
+			VertexFormat(glm::vec3(1,  1, 0), glm::vec3(0, 0, 0), glm::vec3(0.1, 0.5, 0)),
+		};
+
+		vector<unsigned short> indices =
+		{
+			0, 1, 2,		1, 3, 2,
+			2, 3, 7,		2, 7, 6,
+			1, 7, 3,		1, 5, 7,
+			6, 7, 4,		7, 5, 4,
+			0, 4, 1,		1, 4, 5,
+			2, 6, 4,		0, 2, 4,
+		};
+
+		CreateMesh("road", vertices, indices);
+	}
+
 	// Create a shader program for drawing face polygon with the color of the normal
 	{
 		Shader *shader = new Shader("ShaderLab6");
@@ -64,6 +90,14 @@ void Laborator6::Init()
 		Shader *shader = new Shader("ShaderTerrain");
 		shader->AddShader("Source/Laboratoare/Laborator6/Shaders/VertexShaderTerrain.glsl", GL_VERTEX_SHADER);
 		shader->AddShader("Source/Laboratoare/Laborator6/Shaders/FragmentShaderTerrain.glsl", GL_FRAGMENT_SHADER);
+		shader->CreateAndLink();
+		shaders[shader->GetName()] = shader;
+	}
+
+	{
+		Shader *shader = new Shader("ShaderRoad");
+		shader->AddShader("Source/Laboratoare/Laborator6/Shaders/VertexShaderRoad.glsl", GL_VERTEX_SHADER);
+		shader->AddShader("Source/Laboratoare/Laborator6/Shaders/FragmentShaderRoad.glsl", GL_FRAGMENT_SHADER);
 		shader->CreateAndLink();
 		shaders[shader->GetName()] = shader;
 	}
@@ -154,6 +188,14 @@ void Laborator6::Update(float deltaTimeSeconds)
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f));
 		RenderSimpleMesh(meshes["cube"], shaders["ShaderTerrain"], modelMatrix);
+	}
+
+	{
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(1, 0.01f, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
+		RenderSimpleMesh(meshes["road"], shaders["ShaderRoad"], modelMatrix);
 	}
 
 	{

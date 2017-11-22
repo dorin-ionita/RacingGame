@@ -273,6 +273,30 @@
     <None Include="FragmentShaderTerrain.glsl">
       <Filter>Laboratoare\Laborator6\Shaders</Filter>
     </None>
+    <None Include="VertexShaderRoad.glcl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="FragmentShaderRoad.glcl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShaderRoad.glcl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShaderRoad.glsl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShaderTerrain.glsl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShaderRoad.glcl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShaderRoad.glsl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShaderTerrain.glsl">
+      <Filter>Laboratoare\Laborator6\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Framework_EGC.rc" />
