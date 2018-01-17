@@ -6,13 +6,26 @@
 #include <cstdio>
 
 #include <Core/Engine.h>
+#define OFFSET_MACH_PLACE 10
 
 using namespace std;
 
 char my_data[1000];
 int last_x_road = -30;
 int last_y_road = -30;
+int old_last_x_road = 0;
+int old_last_y_road = 0;
 int cur_idx_string = 0;
+
+float general_angle;
+float offset;
+
+float old_y;
+float old_x;
+
+float ROTATE_ANGLE;
+
+GLenum polygonMode;
 
 Laborator6::Laborator6()
 {
@@ -24,6 +37,8 @@ Laborator6::~Laborator6()
 
 void Laborator6::Init()
 {
+	ROTATE_ANGLE = 30;
+	polygonMode = GL_FILL;
 	{
 		FILE *input_file;
 		input_file = fopen("input.txt", "r");
@@ -68,6 +83,12 @@ void Laborator6::Init()
 		};
 
 		CreateMesh("cube", vertices, indices);
+	}
+
+	{
+		Mesh* mesh = new Mesh("roata");
+		mesh->LoadMesh(RESOURCE_PATH::MODELS + "Primitives", "oildrum.obj");
+		meshes[mesh->GetMeshID()] = mesh;
 	}
 
 	{
@@ -193,32 +214,79 @@ void Laborator6::FrameStart()
 
 void Laborator6::Update(float deltaTimeSeconds)
 {
-
+	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 	{
+		//the car
 		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(45.0f), glm::vec3(0, 1, 0));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(90.0f));
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.55f, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
+		//modelMatirx = glm::translate(modelMatrix, glm::vec3(offset, 0, 0))
 		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+		// the wheels
+		modelMatrix = glm::mat4(1);
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.25, 0.15, 0.25));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+		//cout << ROTATE_ANGLE;
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 1, 0));
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 0, 1));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
+		RenderSimpleMesh(meshes["roata"], shaders["ShaderLab6"], modelMatrix);
+
+		modelMatrix = glm::mat4(1);
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.25, 0.15, -0.25));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 1, 0));
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 0, 1));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
+		RenderSimpleMesh(meshes["roata"], shaders["ShaderLab6"], modelMatrix);
 	}
+	//{
+	//	glm::mat4 modelMatrix = glm::mat4(1);
+	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
+	//	modelMatrix = glm::rotate(modelMatrix, RADIANS(45.0f), glm::vec3(0, 1, 0));
+	//	modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f));
+	//	RenderSimpleMesh(meshes["oildrum"], shaders["ShaderLab6"], modelMatrix);
+	//}
+
+	//{
+	//	glm::mat4 modelMatrix = glm::mat4(1);
+	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
+	//	modelMatrix = glm::rotate(modelMatrix, RADIANS(45.0f), glm::vec3(0, 1, 0));
+	//	modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
+	//	RenderSimpleMesh(meshes["parapet"], shaders["ShaderLab6"], modelMatrix);
+	//}
+
+
+	//{
+	//	glm::mat4 modelMatrix = glm::mat4(1);
+	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
+	//	modelMatrix = glm::rotate(modelMatrix, RADIANS(45.0f), glm::vec3(0, 1, 0));
+	//	modelMatrix = glm::scale(modelMatrix, glm::vec3(90.0f));
+	//	RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+	//}
 
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
 		//modelMatrix = glm::translate(modelMatrix, glm::vec3(2, 0, 0));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(1000.0f));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f));
+		//modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 0, 15));
 		RenderSimpleMesh(meshes["cube"], shaders["ShaderTerrain"], modelMatrix);
 	}
 
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(-2, 0.5f, 0));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 1, 0));
-		RenderMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
-	}
 
 	{
 		for (int i = cur_idx_string; i < strlen(my_data); i += 2) {
+			old_last_x_road = last_x_road;
+			old_last_y_road = last_y_road;
+			
 			if (my_data[i] == '1') {
 				//cout << 1;
 				last_x_road += 2;
@@ -235,15 +303,184 @@ void Laborator6::Update(float deltaTimeSeconds)
 				//cout << 4;
 				last_x_road -= 2;
 			}
+
 			{
 				//cout << "AICI";
 				//cout << last_x_road << " " << last_y_road << endl;
 				glm::mat4 modelMatrix = glm::mat4(1);
+				modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0));
+				modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+				modelMatrix = glm::translate(modelMatrix, glm::vec3(-old_x - OFFSET_MACH_PLACE, 0, old_y));
 				modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road, 0.01f, last_y_road));
 				modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 				modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
 				RenderSimpleMesh(meshes["road"], shaders["ShaderRoad"], modelMatrix);
 			}
+			
+
+
+			//if (i != strlen(my_data) - 1 && my_data[i] == '1' && my_data[i + 1] == '3') {
+
+			//} 
+			//else if (i != strlen(my_data) - 1 && my_data[i] == '3' && my_data[i + 1] == '4') {
+
+			//} 
+			//else if (i != strlen(my_data) - 1 && my_data[i] == '4' && my_data[i + 1] == '2') {
+
+			//}
+			//else if (i - 1 == strlen(my_data)) {
+
+			//} 
+			//if (my_data[i] == '1' && my_data[i + 1] != '3') {
+			//	// o latura
+			//	if (my_data[i + 2] != '3' && i != 0) {
+			//		glm::mat4 modelMatrix = glm::mat4(1);
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//		//modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road, 0.01f, last_y_road + 1.5f));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//		modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//		modelMatrix = glm::mat4(1);
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//		//modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f,0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road + 0.5f, 0.01f, last_y_road + 1.5f));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//		modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//		modelMatrix = glm::mat4(1);
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//		//modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road - 0.5f, 0.01f, last_y_road + 1.5f));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//		modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+			//	}
+
+			//	//cealalta latura
+			//	glm::mat4 modelMatrix = glm::mat4(1);
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road, 0.01f, last_y_road - 1.5f));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//	modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//	RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//	modelMatrix = glm::mat4(1);
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f,0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road + 0.5f, 0.01f, last_y_road - 1.5f));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//	modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//	RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//	modelMatrix = glm::mat4(1);
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road - 0.5f, 0.01f, last_y_road - 1.5f));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//	modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//	RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+			//}
+			//else if (my_data[i] == '2' && my_data[i + 1] != '3') {
+
+			//}
+			//else if (my_data[i] == '3' && my_data[i + 1] != '4') {
+			//	if (my_data[i - 1] == '1') {
+			//		glm::mat4 modelMatrix = glm::mat4(1);
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road - 2.5f, 0.01f, last_y_road - 1.5f));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//		modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+			//	}
+			//	if (my_data[i + 2] != '4' && my_data[i - 1] != '1') {
+			//		//glm::mat4 modelMatrix = glm::mat4(1);
+			//		//modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road, 0.01f, last_y_road + 1.5));
+			//		//modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//		//modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		//RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix)
+
+			//		glm::mat4 modelMatrix = glm::mat4(1);
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road - 1.5f, 0.01f, last_y_road - 1.5f));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//		modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//		modelMatrix = glm::mat4(1);
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road + 1.5f, 0.01f, last_y_road - 1.5f));
+			//		modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//		modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//		RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//	}
+
+			//	//cealalta latura
+			//	//glm::mat4 modelMatrix = glm::mat4(1);
+			//	//modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road, 0.01f, last_y_road - 1.5f));
+			//	//modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//	//modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//	//RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+			//	glm::mat4 modelMatrix = glm::mat4(1);
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road + 1.5f, 0.01f, last_y_road + 1.5));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//	modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//	RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+
+			//	modelMatrix = glm::mat4(1);
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0 + OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 1, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(-OFFSET_MACH_PLACE, 0.01f, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0 - offset));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(last_x_road - 1.5f, 0.01f, last_y_road + 1.5));
+			//	modelMatrix = glm::rotate(modelMatrix, RADIANS(0), glm::vec3(1, 0, 0));
+			//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, offset, 0));
+			//	modelMatrix = glm::scale(modelMatrix, glm::vec3(1));
+			//	RenderSimpleMesh(meshes["box"], shaders["ShaderLab6"], modelMatrix);
+			//}
+			//else if (my_data[i] == '4') {
+			//
+			//}
+
 		}
 	}
 	last_x_road = -30;
@@ -303,16 +540,54 @@ void Laborator6::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & 
 
 void Laborator6::OnInputUpdate(float deltaTime, int mods)
 {
-	// add key press event
+	if (window->KeyHold(GLFW_KEY_J)) {
+		general_angle -= 0.5;
+	}
+	if (window->KeyHold(GLFW_KEY_L)) {
+		general_angle += 0.5;
+	}
+	if (window->KeyHold(GLFW_KEY_I)) {
+		offset-=0.05;
+		old_y += 0.05 * cos(RADIANS(general_angle));
+		old_x += 0.05 * sin(RADIANS(general_angle));
+	}
+	if (window->KeyHold(GLFW_KEY_K)) {
+		old_y -=0.05 * cos(RADIANS(general_angle));
+		old_x -= 0.05 * sin(RADIANS(general_angle));
+	}
 }
 
 void Laborator6::OnKeyPress(int key, int mods)
 {
-	// add key press event
+	if (key == GLFW_KEY_J) {
+		ROTATE_ANGLE = 45;
+	}
+	if (key == GLFW_KEY_L) {
+		ROTATE_ANGLE = 15;
+	}
+
+	if (key == GLFW_KEY_SPACE)
+	{
+		switch (polygonMode)
+		{
+		case GL_LINE:
+			polygonMode = GL_FILL;
+			break;
+		default:
+			polygonMode = GL_LINE;
+			break;
+		}
+	}
 }
 
 void Laborator6::OnKeyRelease(int key, int mods)
 {
+	if (key == GLFW_KEY_J) {
+		ROTATE_ANGLE = 30;
+	}
+	if (key == GLFW_KEY_L) {
+		ROTATE_ANGLE = 30;
+	}
 	// add key release event
 }
 
