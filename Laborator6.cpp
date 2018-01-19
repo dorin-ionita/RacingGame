@@ -258,6 +258,7 @@ void Laborator6::Update(float deltaTimeSeconds)
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 		//cout << ROTATE_ANGLE;
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(old_x + last_x_road * 10 - old_y - last_y_road * 10), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 0, 1));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
@@ -268,6 +269,7 @@ void Laborator6::Update(float deltaTimeSeconds)
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5, 0.15, -0.25));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(old_x + last_x_road * 10 - old_y - last_y_road * 10), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 0, 1));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
@@ -278,6 +280,7 @@ void Laborator6::Update(float deltaTimeSeconds)
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 		//cout << ROTATE_ANGLE;
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(old_x + last_x_road * 10 - old_y - last_y_road * 10), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 0, 1));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
@@ -288,6 +291,7 @@ void Laborator6::Update(float deltaTimeSeconds)
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(+0.1, 0.15, -0.25));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f + ROTATE_ANGLE), glm::vec3(0, 0, 1));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(old_x + last_x_road * 10 - old_y - last_y_road * 10), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 1, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(0, 0, 1));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
@@ -325,6 +329,10 @@ void Laborator6::Update(float deltaTimeSeconds)
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(-90.0f), glm::vec3(1, 0, 0));
 		//modelMatrix = glm::rotate(modelMatrix, RADIANS(general_angle), glm::vec3(0, 0, 15));
 		RenderSimpleMesh(meshes["cube"], shaders["ShaderTerrain"], modelMatrix);
+	}
+
+	{
+		
 	}
 
 
